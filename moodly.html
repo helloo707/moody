@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mood Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body> 
+    <div class="app-container">
+      <!-- Sidebar Navigation -->
+      <nav class="sidebar">
+        <div class="logo">
+          <h2>moodly</h2>
+        </div>
+        <ul class="nav-links">
+          <li class="active" data-page="dashboard">
+            <span class="icon">📊</span> Dashboard
+          </li>
+          <li data-page="journal"><span class="icon">📝</span> Journal</li>
+          <li data-page="analytics"><span class="icon">📈</span> Analytics</li>
+          <li data-page="calendar"><span class="icon">📅</span> Calendar</li>
+          <li data-page="selfcare"><span class="icon">🧘</span> Self-Care</li>
+          <li data-page="settings"><span class="icon">⚙️</span> Settings</li>
+        </ul>
+        <div class="theme-toggle">
+          <label class="switch">
+            <input type="checkbox" id="theme-switch" />
+            <span class="slider round"></span>
+          </label>
+          <span class="mode-text">Dark Mode</span>
+        </div>
+      </nav>
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <!-- Header Section -->
+        <header>
+          <div class="date-user-info">
+            <h2 id="current-date"></h2>
+            <p id="greeting">Good morning, User!</p>
+          </div>
+          <div class="user-profile">
+            <div class="profile-pic">👤</div>
+          </div>
+        </header>
+
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page active">
+          <div class="mood-selector-container">
+            <h2>How are you feeling today?</h2>
+            <div class="mood-selector">
+              <div class="mood" data-mood="great">😁</div>
+              <div class="mood" data-mood="good">🙂</div>
+              <div class="mood" data-mood="okay">😐</div>
+              <div class="mood" data-mood="sad">😔</div>
+              <div class="mood" data-mood="awful">😢</div>
+            </div>
+            <button id="save-mood" class="primary-btn">Save Mood</button>
+          </div>
+
+          <div class="daily-quote">
+            <h3>Today's Affirmation</h3>
+            <blockquote id="quote-text">
+              "You are capable of amazing things. Take a deep breath and embrace
+              the day ahead."
+            </blockquote>
+          </div>
+
+          <div class="quick-journal">
+            <h3>Quick Journal</h3>
+            <textarea
+              id="journal-entry"
+              placeholder="How are you feeling today? Write your thoughts here..."
+            ></textarea>
+            <button id="save-journal" class="primary-btn">Save Entry</button>
+          </div>
+
+          <div class="mood-summary">
+            <h3>This Week's Mood</h3>
+            <div class="chart-container">
+              <canvas id="weeklyMoodChart"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- Journal Page -->
+        <section id="journal" class="page">
+          <h2>Journal Entries</h2>
+          <div class="new-entry">
+            <h3>New Entry</h3>
+            <input type="text" id="journal-title" placeholder="Title" />
+            <textarea
+              id="journal-content"
+              placeholder="Write your thoughts..."
+            ></textarea>
+            <div class="journal-tools">
+              <button id="add-image" class="secondary-btn">📷 Add Image</button>
+              <button id="add-voice" class="secondary-btn">
+                🎤 Voice Note
+              </button>
+              <button id="save-full-journal" class="primary-btn">
+                Save Entry
+              </button>
+            </div>
+          </div>
+          <div class="journal-history">
+            <h3>Past Entries</h3>
+            <div id="entries-list" class="entries-container">
+              <!-- Journal entries will be dynamically populated here -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Analytics Page -->
+        <section id="analytics" class="page">
+          <h2>Mood Analytics</h2>
+          <div class="analytics-filters">
+            <button class="filter-btn active" data-period="week">Weekly</button>
+            <button class="filter-btn" data-period="month">Monthly</button>
+            <button class="filter-btn" data-period="year">Yearly</button>
+          </div>
+          <div class="charts-grid">
+            <div class="chart-card">
+              <h3>Mood Distribution</h3>
+              <div class="chart-container">
+                <canvas id="moodDistributionChart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3>Mood Trends</h3>
+              <div class="chart-container">
+                <canvas id="moodTrendsChart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card wide">
+              <h3>Mood Calendar</h3>
+              <div class="mood-heatmap">
+                <!-- This will be populated with a heatmap via JavaScript -->
+                <div id="mood-heatmap-container"></div>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3>Mood Insights</h3>
+              <div class="insights-container" id="mood-insights">
+                <p>
+                  Based on your mood patterns, you tend to feel best on
+                  <strong>Fridays</strong> and most challenges on
+                  <strong>Mondays</strong>.
+                </p>
+                <p>
+                  Your overall mood has been <strong>improving</strong> over the
+                  past 2 weeks.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Calendar Page -->
+        <section id="calendar" class="page">
+          <h2>Mood Calendar</h2>
+          <div class="calendar-nav">
+            <button id="prev-month" class="nav-btn">← Prev</button>
+            <h3 id="calendar-month">March 2025</h3>
+            <button id="next-month" class="nav-btn">Next →</button>
+          </div>
+          <div class="calendar-container">
+            <div class="calendar-header">
+              <div>Sun</div>
+              <div>Mon</div>
+              <div>Tue</div>
+              <div>Wed</div>
+              <div>Thu</div>
+              <div>Fri</div>
+              <div>Sat</div>
+            </div>
+            <div id="calendar-days" class="calendar-days">
+              <!-- Calendar days will be generated dynamically -->
+            </div>
+          </div>
+          <div id="day-details" class="day-details">
+            <h3 id="selected-date">No date selected</h3>
+            <div class="day-mood">
+              <span id="day-mood-emoji">--</span>
+              <span id="day-mood-text">No mood recorded</span>
+            </div>
+            <div class="day-journal">
+              <h4>Journal Entry</h4>
+              <p id="day-journal-content">No journal entry for this day.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Self-Care Page -->
+        <section id="selfcare" class="page">
+          <h2>Self-Care Recommendations</h2>
+          <div class="self-care-categories">
+            <div class="category active" data-category="all">All</div>
+            <div class="category" data-category="relaxation">Relaxation</div>
+            <div class="category" data-category="mindfulness">Mindfulness</div>
+            <div class="category" data-category="physical">Physical</div>
+            <div class="category" data-category="creative">Creative</div>
+          </div>
+          <div class="activities-container">
+            <div class="activity-card">
+              <div class="activity-icon">🧘</div>
+              <h3>5-Minute Meditation</h3>
+              <p>Take a short break to center yourself and breathe deeply.</p>
+              <button class="activity-btn">Start Now</button>
+            </div>
+            <div class="activity-card">
+              <div class="activity-icon">🚶</div>
+              <h3>Nature Walk</h3>
+              <p>A 15-minute walk outside can boost your mood significantly.</p>
+              <button class="activity-btn">Set Reminder</button>
+            </div>
+            <div class="activity-card">
+              <div class="activity-icon">📝</div>
+              <h3>Gratitude Journaling</h3>
+              <p>Write down 3 things you're grateful for today.</p>
+              <button class="activity-btn">Start Now</button>
+            </div>
+            <div class="activity-card">
+              <div class="activity-icon">🎵</div>
+              <h3>Mood Playlist</h3>
+              <p>Listen to music curated to improve your current mood.</p>
+              <button class="activity-btn">Play Music</button>
+            </div>
+          </div>
+          <div class="daily-challenge">
+            <h3>Today's Challenge</h3>
+            <div class="challenge-content">
+              <div class="challenge-icon">💧</div>
+              <div class="challenge-details">
+                <h4>Stay Hydrated</h4>
+                <p>
+                  Drink at least 8 glasses of water today to improve your mood
+                  and energy levels.
+                </p>
+                <div class="challenge-progress">
+                  <div class="progress-bar">
+                    <div class="progress" style="width: 62%"></div>
+                  </div>
+                  <span>5/8 glasses</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Settings Page -->
+        <section id="settings" class="page">
+          <h2>Settings</h2>
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3>Profile Settings</h3>
+              <div class="form-group">
+                <label for="display-name">Display Name</label>
+                <input type="text" id="display-name" value="User" />
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" value="user@example.com" />
+              </div>
+              <button class="secondary-btn">Update Profile</button>
+            </div>
+            <div class="settings-card">
+              <h3>Appearance</h3>
+              <div class="form-group">
+                <label for="theme-select">Theme</label>
+                <select id="theme-select">
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                  <option value="auto">System Default</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="accent-color">Accent Color</label>
+                <input type="color" id="accent-color" value="#7c3aed" />
+              </div>
+            </div>
+            <div class="settings-card">
+              <h3>Notifications</h3>
+              <div class="switch-group">
+                <label>Daily Mood Reminders</label>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="switch-group">
+                <label>Weekly Summary</label>
+                <label class="switch">
+                  <input type="checkbox" checked />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="switch-group">
+                <label>Self-Care Reminders</label>
+                <label class="switch">
+                  <input type="checkbox" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+            <div class="settings-card">
+              <h3>Data & Privacy</h3>
+              <button class="secondary-btn">Export Your Data</button>
+              <button class="secondary-btn">Delete All Data</button>
+              <div class="privacy-info">
+                <p>
+                  Your data is stored locally on your device and is not shared
+                  with anyone.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
